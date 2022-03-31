@@ -11,4 +11,4 @@ SWE30010 – Managing IT Projects
 - Ting Pong Wan, 103509034
 - Yukiko Ito, 1028832
 
-Merge conflict Head
+Merge conflict Branch
