@@ -10,3 +10,5 @@ SWE30010 – Managing IT Projects
 - Matthew Coulter, 102573957
 - Ting Pong Wan, 103509034
 - Yukiko Ito, 1028832
+
+Merge conflict Head
