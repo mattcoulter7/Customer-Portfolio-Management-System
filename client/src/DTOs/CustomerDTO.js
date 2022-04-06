@@ -18,7 +18,8 @@ import DTO from './DTO';
         state: VIC
         postcode: 
 */
-export default class Customer extends DTO {
+
+Window.CustomerDTO = class Customer extends DTO {
     #_id;
     #firstName;
     #lastName;
@@ -105,3 +106,5 @@ export default class Customer extends DTO {
         }
     }
 }
+
+export default Window.CustomerDTO;

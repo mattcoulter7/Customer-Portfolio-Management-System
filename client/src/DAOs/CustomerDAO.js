@@ -1,4 +1,6 @@
 import DAO from './DAO';
 import CustomerDTO from './../DTOs/CustomerDTO'
 
-export default new DAO('customer', CustomerDTO);
+Window.CustomerDAO = new DAO('customer', CustomerDTO);
+
+export default Window.CustomerDAO;
