@@ -12,6 +12,8 @@ import {
 import { Field, Formik, useFormik } from "formik"
 import * as Yup from "yup"
 import InputField from "../components/InputField"
+import CustomerDAO from "../DAOs/CustomerDAO"
+import CustomerDTO from "../DTOs/CustomerDTO"
 
 interface Props {}
 const NewCustomer: React.FC<{}> = ({}) => {
@@ -19,24 +21,19 @@ const NewCustomer: React.FC<{}> = ({}) => {
   return (
     <Formik
       initialValues={{
-        firstName: "",
-        lastName: "",
+        name: "",
         createdAt: now.toString(),
-        email: "",
-        phone: "",
       }}
       validationSchema={Yup.object({
-        firstName: Yup.string().required("First name required"),
-        lastName: Yup.string().required("Last name required"),
-        createdAt: Yup.string().required("created at required"),
-        email: Yup.string().required("Email required").email("Invalid Email"),
-        phone: Yup.string().required("Phone Number required"),
+        name: Yup.string().required("First name required"),
+        createdAt: Yup.string().required("created at required")
       })}
-      onSubmit={(values, actions) => {
+      onSubmit={async (values, actions) => {
         console.log(values)
         const now = new Date()
         values.createdAt = now.toString()
         alert(JSON.stringify(values, null, 2))
+        await CustomerDAO.insert(new CustomerDTO(values));
         actions.resetForm()
       }}
     >

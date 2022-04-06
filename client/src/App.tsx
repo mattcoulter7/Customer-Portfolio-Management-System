@@ -7,6 +7,8 @@ import Todo from "./pages/todo"
 import NotFound from "./pages/notFound"
 import NewCustomer from "./pages/newCustomer"
 
+import CustomerDAO from './DAOs/CustomerDAO';
+
 function App() {
   return (
     <BrowserRouter>

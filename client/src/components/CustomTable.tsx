@@ -13,13 +13,14 @@ import {
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons"
 
 interface ICustomer {
-  id: number
+  _id: string
   firstName: string
   lastName: string
   createdAt: string
+  DOB: string
   email: string
   phone: string
-  capital: number
+  addressid: string
 }
 
 interface Props {
@@ -45,11 +46,7 @@ const CustomTable: React.FC<Props> = ({ customers }) => {
       {
         Header: "joined at",
         accessor: "createdAt",
-      },
-      {
-        Header: "capital",
-        accessor: "capital",
-      },
+      }
     ],
     [],
   )
