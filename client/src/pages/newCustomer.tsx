@@ -19,18 +19,12 @@ const NewCustomer: React.FC<{}> = ({}) => {
   return (
     <Formik
       initialValues={{
-        firstName: "",
-        lastName: "",
+        name: "",
         createdAt: now.toString(),
-        email: "",
-        phone: "",
       }}
       validationSchema={Yup.object({
-        firstName: Yup.string().required("First name required"),
-        lastName: Yup.string().required("Last name required"),
-        createdAt: Yup.string().required("created at required"),
-        email: Yup.string().required("Email required").email("Invalid Email"),
-        phone: Yup.string().required("Phone Number required"),
+        name: Yup.string().required("First name required"),
+        createdAt: Yup.string().required("created at required")
       })}
       onSubmit={(values, actions) => {
         console.log(values)

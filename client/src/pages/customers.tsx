@@ -3,16 +3,19 @@ import { useEffect, useState } from "react"
 import CustomTable from "../components/CustomTable"
 import Searchbar from "../components/Searchbar"
 
+import CustomerDAO from "../DAOs/CustomerDAO"
+
 interface customersProps {}
 
 interface ICustomer {
-  id: number
+  _id: string
   firstName: string
   lastName: string
   createdAt: string
+  DOB: string
   email: string
   phone: string
-  capital: number
+  addressid: string
 }
 
 const Customers: React.FC<customersProps> = ({}) => {
@@ -25,7 +28,8 @@ const Customers: React.FC<customersProps> = ({}) => {
 
   useEffect(() => {
     const getCustomers = async () => {
-      const customersFromServer = await fetchCustomers()
+      
+      const customersFromServer = await CustomerDAO.select();
       setCustomers(customersFromServer)
       setCustomersCopy(customersFromServer)
     }
