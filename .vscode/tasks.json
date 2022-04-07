@@ -1,0 +1,45 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start React Client",
+            "command":  "cd ./client;yarn start;cd ..;",
+            "args": [],
+            "type": "shell",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Start Node.js Server",
+            "command":  "cd ./server;npm run devStart;cd ..;",
+            "args": [],
+            "type": "shell",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Refresh Server Node Packages",
+            "command":  "cd ./server;npm install;cd ..;",
+            "args": [],
+            "type": "shell",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"
+            }
+        },
+        {
+            "label": "Refresh React Node Packages",
+            "command":  "cd ./client;yarn;cd ..;",
+            "args": [],
+            "type": "shell",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"
+            }
+        }
+    ]
+}
