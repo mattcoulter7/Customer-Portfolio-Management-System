@@ -1,49 +1,26 @@
 import DTO from './DTO';
+import AddressDTO from './AddressDTO';
 
-/*
-    customer table
-        firstName: String
-        lastName: String
-        createdAt: Date
-        DOB: Date
-        email: String
-        phone: String
-        addressid: String 123456789
-
-    address table
-        id: 123456789
-        street: 1 John Street
-        city: Melbourne
-        suburb: Hawthorn
-        state: VIC
-        postcode: 
-*/
-
-Window.CustomerDTO = class Customer extends DTO {
-    #_id;
+class CustomerDTO extends DTO {
     #firstName;
     #lastName;
     #createdAt;
     #DOB;
     #email;
     #phone;
-    #addressid;
+    #address;
 
-    constructor(obj){
+    constructor(obj = {}){
         super(obj);
-        this.#_id = obj._id;
         this.#firstName = obj.firstName;
         this.#lastName = obj.lastName;
         this.#createdAt = obj.createdAt;
         this.#DOB = obj.DOB;
         this.#email = obj.email;
         this.#phone = obj.phone;
-        this.#addressid = obj.addressid;
+        this.#address = new AddressDTO(obj.address);
     }
 
-    get _id(){
-        return this.#_id;
-    }
     get firstName() {
         return this.#firstName;
     }
@@ -86,25 +63,27 @@ Window.CustomerDTO = class Customer extends DTO {
     set createdAtDate(value){
         this.#createdAt = value.toISOString();
     }
-    get addressid() {
-        return this.#addressid;
+    get address() {
+        return this.#address;
     }
-    set addressid(value){
-        this.#addressid = value;
+    set address(value){
+        this.#address = value;
     }
 
     toJSON(){
         return {
             _id:this._id,
-            firstName:this.#firstName,
-            lastName:this.#lastName,
-            createdAt:this.#createdAt,
-            DOB:this.#DOB,
-            email:this.#email,
-            phone:this.#phone,
-            addressid:this.#addressid
+            firstName:this.firstName,
+            lastName:this.lastName,
+            createdAt:this.createdAt,
+            DOB:this.DOB,
+            email:this.email,
+            phone:this.phone,
+            address:this.address.toFilteredJSON()
         }
     }
 }
 
-export default Window.CustomerDTO;
+Window.CustomerDTO = CustomerDTO; // TODO: Remove this... debug only
+
+export default CustomerDTO;
