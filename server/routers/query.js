@@ -1,21 +1,27 @@
 const express = require('express');
+const { default: mongoose } = require('mongoose');
 const router = express.Router();
+const ModelUtils = require('../models/ModelUtils');
 
 //#region load all schemas here
 const tables = {
-        'customer': require('./../models/CustomerModel')
-    }
-    //#endregion
+    'customer': new ModelUtils(require('../models/CustomerModel')),
+    'address': new ModelUtils(require('../models/AddressModel')),
+    'sample': new ModelUtils(require('../models/SampleModel'))
+}
+//#endregion
 
-router.get('/:table', validateTable(), async(req, res) => {
-    const resultSet = await req.schema.find();
+router.get('/:table', validateTable(), async (req, res) => {
+    const resultSet = await req.schema.model.find();
+    await performRecursivePopulation(req.schema, resultSet);
     return res.send(resultSet);
 });
 
-router.get('/:table/:id', validateTable(), async(req, res) => {
+router.get('/:table/:id', validateTable(), async (req, res) => {
     try {
-        const resultSet = await req.schema.findById(req.params.id);
-        if (resultSet){
+        const resultSet = await req.schema.model.findById(req.params.id);
+        await performRecursivePopulation(req.schema,resultSet);
+        if (resultSet) {
             return res.send(resultSet);
         } else {
             return res.status(404).send({});
@@ -25,19 +31,19 @@ router.get('/:table/:id', validateTable(), async(req, res) => {
     }
 });
 
-router.post('/:table', validateTable(), async(req, res, next) => {
-    req.obj = new req.schema();
+router.post('/:table', validateTable(), async (req, res, next) => {
+    req.obj = new req.schema.model();
     next();
 }, saveObj());
 
-router.put('/:table/:id', validateTable(), async(req, res, next) => {
-    req.obj = await req.schema.findById(req.params.id);
+router.put('/:table/:id', validateTable(), async (req, res, next) => {
+    req.obj = await req.schema.model.findById(req.params.id);
     next();
 }, saveObj());
 
-router.delete('/:table/:id', validateTable(), async(req, res) => {
+router.delete('/:table/:id', validateTable(), async (req, res) => {
     try {
-        await req.schema.findByIdAndDelete(req.params.id);
+        await req.schema.model.findByIdAndDelete(req.params.id);
         return res.send(true);
     } catch (e) {
         return res.status(400).send(e);
@@ -45,7 +51,7 @@ router.delete('/:table/:id', validateTable(), async(req, res) => {
 });
 
 function validateTable() {
-    return async(req, res, next) => {
+    return async (req, res, next) => {
         req.schema = tables[req.params.table];
         if (!req.schema) {
             return res.status(400).send(new Error(`Table: ${req.params.table} does not exist.`));
@@ -55,18 +61,66 @@ function validateTable() {
 }
 
 function saveObj() {
-    return async(req, res) => {
-        let obj = req.obj;
-        for (const [key, value] of Object.entries(req.body)) {
-            obj[key] = value
-        }
+    return async (req, res) => {
         try {
-            obj = await obj.save();
+            let obj = await performRecursiveSave(req.schema, req.obj, req.body);
+            await performRecursivePopulation(req.schema,obj);
             return res.send(obj);
         } catch (e) {
             return res.status(400).send(e);
         }
     }
+}
+
+async function getOrCreateObj(schema, id) {
+    // returns the existing schema object if it exists, otherwise creates a new one
+    if (id != null) {
+        return await schema.model.findById(id);
+    }
+    return new schema.model();
+}
+
+async function performRecursiveSave(schema, obj, body) {
+    // performs save, on foreign key nested objects too
+    for (const [key, value] of Object.entries(body)) {
+        let resultValue = value;
+        if (schema.foreignKeys.includes(key)){
+            // foreign key, need to save this relational object
+            let foreignSchema = tables[key];
+            let foreignObj = await getOrCreateObj(foreignSchema, value._id);
+            let foreignResult = await performRecursiveSave(foreignSchema, foreignObj, value); // recursion to save all foreign links
+
+            // want to save the id of result, instead of the nested object
+            resultValue = foreignResult._id;
+        }
+        obj[key] = resultValue
+    }
+    return await obj.save();
+}
+
+async function performRecursivePopulation(schema, items) {
+    // populate foreign keys with nested objects instead of id
+    // items can work as an array or a key
+    // perform the populations on this level
+    for (let i in schema.foreignKeys){
+        let key = schema.foreignKeys[i];
+        // populate foreign keys of the current table
+        await schema.model.populate(items,{
+            path: key
+        });
+
+        // populate keys of the newly populated table
+        var foreignSchema = tables[key];
+        if (foreignSchema){
+            var children = Array.isArray(items) ? items.map(obj => obj[key]) : items[key];
+            var valid = Array.isArray(items) ? children.length > 0 : children != null;
+            if (valid){
+                await performRecursivePopulation(foreignSchema,children);
+            }
+        }
+    }
+
+    return items;
 }
 
 module.exports = router;

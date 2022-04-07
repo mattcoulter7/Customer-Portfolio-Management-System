@@ -25,9 +25,9 @@ const customerSchema = new mongoose.Schema({
         type: String,
         required: false
     },
-    addressid: {
-        type: String,
-        required: false
+    address: { // foreign column name must match map key in query router 'tables' object
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Address'
     }
 })
 module.exports = mongoose.model('Customer', customerSchema)
