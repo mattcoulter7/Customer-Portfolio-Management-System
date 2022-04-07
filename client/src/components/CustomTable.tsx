@@ -11,29 +11,19 @@ import {
   TableCaption,
 } from "@chakra-ui/react"
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons"
-
-interface ICustomer {
-  _id: string
-  firstName: string
-  lastName: string
-  createdAt: string
-  DOB: string
-  email: string
-  phone: string
-  addressid: string
-}
+import { Customer } from "../types/types"
 
 interface Props {
-  customers: Array<ICustomer>
+  customers: Array<Customer>
 }
 
 const CustomTable: React.FC<Props> = ({ customers }) => {
   const range = 20
-  const data: Array<ICustomer> = React.useMemo(
+  const data: Array<Customer> = React.useMemo(
     () => customers.slice(0, range),
     [customers],
   )
-  const columns: Column<ICustomer>[] = React.useMemo(
+  const columns: Column<Customer>[] = React.useMemo(
     () => [
       {
         Header: "first name",
@@ -46,7 +36,7 @@ const CustomTable: React.FC<Props> = ({ customers }) => {
       {
         Header: "joined at",
         accessor: "createdAt",
-      }
+      },
     ],
     [],
   )

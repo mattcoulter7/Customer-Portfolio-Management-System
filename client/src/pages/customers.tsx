@@ -4,44 +4,24 @@ import CustomTable from "../components/CustomTable"
 import Searchbar from "../components/Searchbar"
 
 import CustomerDAO from "../DAOs/CustomerDAO"
+import { Customer } from "../types/types"
 
 interface customersProps {}
 
-interface ICustomer {
-  _id: string
-  firstName: string
-  lastName: string
-  createdAt: string
-  DOB: string
-  email: string
-  phone: string
-  addressid: string
-}
-
-const Customers: React.FC<customersProps> = ({}) => {
-  const domainName: string | undefined = process.env.REACT_APP_DOMAIN_NAME
-  const protocol: string | undefined = process.env.REACT_APP_PROTOCOL
-  const url: string = `${protocol}://${domainName}`
-  const [customers, setCustomers] = useState<null | ICustomer[]>(null)
+const Customers: React.FC<customersProps> = () => {
+  const [customers, setCustomers] = useState<null | Customer[]>(null)
   const [searchText, setSearchText] = useState<string>("")
-  const [customersCopy, setCustomersCopy] = useState<null | ICustomer[]>(null)
+  const [customersCopy, setCustomersCopy] = useState<null | Customer[]>(null)
 
   useEffect(() => {
     const getCustomers = async () => {
-      
-      const customersFromServer = await CustomerDAO.select();
+      const customersFromServer = await CustomerDAO.select()
+      console.log(customersFromServer)
       setCustomers(customersFromServer)
       setCustomersCopy(customersFromServer)
     }
     getCustomers()
   }, [])
-
-  const fetchCustomers = async () => {
-    const res = await fetch(`${url}/customers`)
-    const data = await res.json()
-
-    return data
-  }
 
   const handleSearchTextChange = (text: string) => {
     setSearchText(text)
