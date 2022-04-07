@@ -4,8 +4,17 @@ function filterUndefined(object, callback) {
 }
 
 export default class DTO {
+    #_id;
+    constructor(obj){
+        this.#_id = obj._id;
+    }
+    get _id(){
+        return this.#_id;
+    }
     toJSON() { // override this
-        return {}
+        return {
+            _id:this._id
+        }
     }
     toFilteredJSON() {
         return filterUndefined(this.toJSON(), (pair) => typeof pair[1] !== "undefined")

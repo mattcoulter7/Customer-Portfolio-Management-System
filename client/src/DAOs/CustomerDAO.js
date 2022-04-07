@@ -1,6 +1,8 @@
 import DAO from './DAO';
 import CustomerDTO from './../DTOs/CustomerDTO'
 
-Window.CustomerDAO = new DAO('customer', CustomerDTO);
+const CustomerDAO = new DAO('customer', CustomerDTO);
 
-export default Window.CustomerDAO;
+Window.CustomerDAO = CustomerDAO; // TODO: Remove this... debug only
+
+export default CustomerDAO;
