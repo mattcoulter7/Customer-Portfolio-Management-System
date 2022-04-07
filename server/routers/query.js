@@ -43,8 +43,8 @@ router.put('/:table/:id', validateTable(), async (req, res, next) => {
 
 router.delete('/:table/:id', validateTable(), async (req, res) => {
     try {
-        await req.schema.model.findByIdAndDelete(req.params.id);
-        return res.send(true);
+        var result = await req.schema.model.findByIdAndDelete(req.params.id);
+        return res.send(!!result);
     } catch (e) {
         return res.status(400).send(e);
     }
