@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const queryRouter = require('./routers/query');
+const userRouter = require('./routers/user');
 const methodOverride = require('method-override');
 
 mongoose.connect('mongodb://localhost/cpms', {
@@ -19,4 +20,5 @@ app.use(bodyParser.urlencoded({
 app.use(methodOverride('_method'))
 
 app.use('/query', queryRouter);
+app.use('/user', userRouter);
 app.listen(3001);
