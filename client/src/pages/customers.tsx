@@ -16,25 +16,25 @@ const Customers: React.FC<customersProps> = () => {
   useEffect(() => {
     const getCustomers = async () => {
       const customersFromServer = await CustomerDAO.select()
-      console.log(customersFromServer)
       setCustomers(customersFromServer)
       setCustomersCopy(customersFromServer)
     }
     getCustomers()
   }, [])
 
-  const handleSearchTextChange = (text: string) => {
-    setSearchText(text)
-    sortCustomersByName(text)
+  const handleSearchTextChange = (searchbarInput: string) => {
+    setSearchText(searchbarInput)
+    sortCustomersByName(searchbarInput)
   }
 
-  const sortCustomersByName = (text: string) => {
+  const sortCustomersByName = (searchbarInput: string) => {
     if (customers) {
-      const result = customers.filter(
+      const sortedCustomersCopy = customers.filter(
         (customer) =>
-          customer.firstName.includes(text) || customer.lastName.includes(text),
+          customer.firstName.includes(searchbarInput) ||
+          customer.lastName.includes(searchbarInput),
       )
-      setCustomersCopy(result)
+      setCustomersCopy(sortedCustomersCopy)
     }
   }
 
