@@ -11,7 +11,7 @@ const addressSchema = new mongoose.Schema({
     },
     line2: {
         type: String,
-        required: true
+        required: false
     },
     postcode: {
         type: Date,
