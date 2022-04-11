@@ -3,12 +3,15 @@ const { default: mongoose } = require('mongoose');
 const router = express.Router();
 var crypto = require('crypto');
 const UserModel = require('../models/UserModel');
+const Authentication = require('../utils/Authentication');
+const res = require('express/lib/response');
 
 // check login valid
 router.get('/',
     validateExistingUser(),
     hashPassword(),
-    authenticateUser()
+    authenticateUser(),
+    runAuthentication()
 );
 
 // create user account
@@ -28,21 +31,34 @@ router.put('/',
     saveUser()
 )
 
-// checks if there is a user with matching user and hash
+function runAuthentication() {
+    // actually authorizes the client to make requests etc.
+    return async (req, res, next) => {
+        // get auth token for authenticated user
+        const authToken = Authentication.Instance().authenticate(req.user);
+
+        // store the token in clients cookies
+        res.cookie('AuthToken',authToken);
+
+        return res.status(200).send({
+            valid: true
+        });
+    }
+}
+
 function authenticateUser() {
+    // checks if there is a user with matching user and hash
     return async (req, res, next) => {
         const users = await UserModel.find();
         const authUser = users.filter(u =>
             u.user == req.body.user &&
             u.hash == req.body.hash)[0];
         if (authUser) {
-            return res.status(200).send({
-                valid: true
-            });
+            return next()
         }
         return res.status(400).send({
             valid: false,
-            error: "Invalid Password"
+            error: "Incorrect User or Password"
         });
     }
 }
@@ -51,8 +67,8 @@ function hash(password) {
     return crypto.createHash('md5').update(password).digest("hex");
 }
 
-// converts the supplied password to a hash
 function hashPassword() {
+    // converts the supplied password to a hash
     return async (req, res, next) => {
         try {
             req.body.hash = hash(req.body.password);
@@ -63,16 +79,16 @@ function hashPassword() {
             }
         } catch (e) {
             return res.status(400).send({
-                valid:false,
-                error:e
+                valid: false,
+                error: e
             });
         }
         return next();
     }
 }
 
-// ensures both passwords match
 function validateMatchPassword() {
+    // ensures both passwords match
     return async (req, res, next) => {
         if (req.body.hash == req.body.hashMatch) {
             return next();
@@ -85,9 +101,10 @@ function validateMatchPassword() {
     }
 }
 
-function validateDifferentPassword(){
+function validateDifferentPassword() {
+    // ensures the password is different to the existing password
     return async (req, res, next) => {
-        if (req.body.hash !== req.obj.hash) {
+        if (req.body.hash !== req.user.hash) {
             return next();
         }
         return res.status(400).send(
@@ -98,52 +115,52 @@ function validateDifferentPassword(){
     }
 }
 
-// ensures there is no existing user, caches the user object
 function validateNoExistingUser() {
+    // ensures there is no existing user, caches the user object
     return async (req, res, next) => {
         const users = await UserModel.find();
         const duplicateUser = users.filter(u => u.user == req.body.user)[0];
         if (duplicateUser) {
             return res.status(400).send({
-                valid:false,
-                error:`The user ${req.body.user} already exists.`
+                valid: false,
+                error: `The user ${req.body.user} already exists.`
             });
         }
-        req.obj = new UserModel();
+        req.user = new UserModel();
         return next();
     }
 }
 
-// ensures there is an existing user, caches the user object
-function validateExistingUser(){
+function validateExistingUser() {
+    // ensures there is an existing user, caches the user object
     return async (req, res, next) => {
         const users = await UserModel.find();
         const existingUser = users.filter(u => u.user == req.body.user)[0];
         if (existingUser) {
-            req.obj = existingUser;
+            req.user = existingUser;
             return next();
         }
         return res.status(400).send({
-            valid:false,
-            error:`The user ${req.body.user} does not exist.`
+            valid: false,
+            error: `The user ${req.body.user} does not exist.`
         });
     }
 }
 
-// saves the user to the database
 function saveUser() {
+    // saves the user to the database
     return async (req, res, next) => {
         try {
-            req.obj.user = req.body.user;
-            req.obj.hash = req.body.hash;
-            await req.obj.save();
+            req.user.user = req.body.user;
+            req.user.hash = req.body.hash;
+            await req.user.save();
             return res.status(200).send({
-                valid:true
+                valid: true
             });
         } catch (e) {
             return res.status(400).send({
-                valid:false,
-                error:e
+                valid: false,
+                error: e
             });
         }
     }
