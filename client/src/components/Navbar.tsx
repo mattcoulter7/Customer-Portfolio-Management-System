@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   IconButton,
-  Button,
   Stack,
   Collapse,
   Icon,
@@ -12,7 +11,6 @@ import {
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
-  useBreakpointValue,
   useDisclosure,
   Image,
 } from "@chakra-ui/react"
@@ -129,10 +127,10 @@ const DesktopNav = () => {
                 to={navItem.href ?? "#"}
                 fontSize={"sm"}
                 fontWeight={500}
-                color={navItem.color ?? linkColor}
+                color={linkColor}
                 _hover={{
                   textDecoration: "none",
-                  color: navItem.color ?? linkHoverColor,
+                  color: linkHoverColor,
                 }}
               >
                 {navItem.label}
@@ -272,7 +270,6 @@ interface NavItem {
   subLabel?: string
   children?: Array<NavItem>
   href?: string
-  color?: string
 }
 
 const NAV_ITEMS: Array<NavItem> = [
