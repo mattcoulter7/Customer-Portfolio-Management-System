@@ -1,4 +1,4 @@
-import { Box, Button, Heading, SimpleGrid } from "@chakra-ui/react"
+import { Box, Button, Heading, SimpleGrid, useToast } from "@chakra-ui/react"
 import { Formik } from "formik"
 import * as Yup from "yup"
 import InputField from "../components/InputField"
@@ -7,7 +7,23 @@ import CustomerDTO from "../DTOs/CustomerDTO"
 
 interface Props {}
 const NewCustomer: React.FC<Props> = () => {
+  /* 
+    useEffect(() => {
+    const script = document.createElement("script")
+
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_PLACES_API_KEY}&libraries=places`
+    script.async = true
+
+    document.body.appendChild(script)
+
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [])
+  */
+
   const now = new Date()
+  const toast = useToast()
   return (
     <Formik
       initialValues={{
@@ -83,17 +99,25 @@ const NewCustomer: React.FC<Props> = () => {
           }),
         ).then((result) => {
           if (result) {
-            /* -- TODO -- */
-            alert("ok")
-            console.log(result)
+            toast({
+              title: "Success",
+              description: "Account created successfully",
+              status: "success",
+              duration: 5000,
+              isClosable: true,
+            })
+
             actions.resetForm()
           } else {
-            /* -- TODO -- */
-            alert("not ok")
-            console.log(result)
+            toast({
+              title: "Error",
+              description: "Something went wrong",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            })
           }
         })
-        actions.resetForm()
       }}
     >
       {(formik) => (
