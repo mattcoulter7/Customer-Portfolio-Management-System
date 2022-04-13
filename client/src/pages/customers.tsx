@@ -36,6 +36,9 @@ const Customers: React.FC<customersProps> = () => {
             .includes(searchbarInput.toLowerCase()) ||
           customer.lastName
             .toLowerCase()
+            .includes(searchbarInput.toLowerCase()) ||
+          `${customer.firstName} ${customer.lastName}`
+            .toLowerCase()
             .includes(searchbarInput.toLowerCase()),
       )
       setCustomersCopy(sortedCustomersCopy)
