@@ -101,6 +101,7 @@ const NewCustomer: React.FC<Props> = () => {
           if (result) {
             toast({
               title: "Success",
+              position: "top-right",
               description: "Account created successfully",
               status: "success",
               duration: 5000,
@@ -111,6 +112,7 @@ const NewCustomer: React.FC<Props> = () => {
           } else {
             toast({
               title: "Error",
+              position: "top-right",
               description: "Something went wrong",
               status: "error",
               duration: 5000,

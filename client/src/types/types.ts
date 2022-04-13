@@ -6,5 +6,15 @@ export interface Customer {
   DOB: string
   email: string
   phone: string
-  addressid: string
+  address: Address
+}
+
+export interface Address {
+  _id: string
+  line1: string
+  line2?: string
+  city: string
+  postcode: string
+  state: string
+  country: string
 }
