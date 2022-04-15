@@ -4,6 +4,8 @@ const router = express.Router();
 const ModelUtils = require('../models/ModelUtils');
 const Authentication = require('../utils/Authentication')
 
+const authenticationEnabled = false;
+
 //#region load all schemas here
 const tables = {
     'customer': new ModelUtils(require('../models/CustomerModel')),
@@ -58,10 +60,9 @@ function validateAuthenticated() {
         const authToken = req.cookies['AuthToken'];
         req.user = Authentication.Instance().getAuthenticated(authToken);
 
-        //TODO: Uncomment this so authentication actually works!
-        //if (!req.user) {
-        //    return res.status(401).send("The request cannot be fulfilled as the client has not logged in.");
-        //}
+        if (authenticationEnabled && !req.user) {
+            return res.status(401).send("The request cannot be fulfilled as the client has not logged in.");
+        }
         return next();
     }
 }
