@@ -5,6 +5,7 @@ var crypto = require('crypto');
 const UserModel = require('../models/UserModel');
 const Authentication = require('../utils/Authentication');
 const res = require('express/lib/response');
+const ForeignMongo = require('../utils/ForeignMongo')
 
 // check login valid
 router.get('/',
@@ -33,12 +34,12 @@ router.put('/',
 
 function runAuthentication() {
     // actually authorizes the client to make requests etc.
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         // get auth token for authenticated user
         const authToken = Authentication.Instance().authenticate(req.user);
 
         // store the token in clients cookies
-        res.cookie('AuthToken',authToken);
+        res.cookie('AuthToken', authToken);
 
         return res.status(200).send({
             valid: true
@@ -48,7 +49,7 @@ function runAuthentication() {
 
 function authenticateUser() {
     // checks if there is a user with matching user and hash
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         const users = await UserModel.find();
         const authUser = users.filter(u =>
             u.user == req.body.user &&
@@ -69,7 +70,7 @@ function hash(password) {
 
 function hashPassword() {
     // converts the supplied password to a hash
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         try {
             req.body.hash = hash(req.body.password);
 
@@ -89,35 +90,33 @@ function hashPassword() {
 
 function validateMatchPassword() {
     // ensures both passwords match
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         if (req.body.hash == req.body.hashMatch) {
             return next();
         }
-        return res.status(400).send(
-            {
-                valid: false,
-                error: "Passwords do not match"
-            });
+        return res.status(400).send({
+            valid: false,
+            error: "Passwords do not match"
+        });
     }
 }
 
 function validateDifferentPassword() {
     // ensures the password is different to the existing password
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         if (req.body.hash !== req.user.hash) {
             return next();
         }
-        return res.status(400).send(
-            {
-                valid: false,
-                error: "Password must be different to existing password"
-            });
+        return res.status(400).send({
+            valid: false,
+            error: "Password must be different to existing password"
+        });
     }
 }
 
 function validateNoExistingUser() {
     // ensures there is no existing user, caches the user object
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         const users = await UserModel.find();
         const duplicateUser = users.filter(u => u.user == req.body.user)[0];
         if (duplicateUser) {
@@ -133,7 +132,7 @@ function validateNoExistingUser() {
 
 function validateExistingUser() {
     // ensures there is an existing user, caches the user object
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         const users = await UserModel.find();
         const existingUser = users.filter(u => u.user == req.body.user)[0];
         if (existingUser) {
@@ -149,11 +148,11 @@ function validateExistingUser() {
 
 function saveUser() {
     // saves the user to the database
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         try {
-            req.user.user = req.body.user;
-            req.user.hash = req.body.hash;
-            await req.user.save();
+            // save login details
+            await ForeignMongo.performRecursiveSave(UserModel, req.user, req.body);
+
             return res.status(200).send({
                 valid: true
             });
