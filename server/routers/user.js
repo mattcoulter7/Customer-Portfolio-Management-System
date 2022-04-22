@@ -5,9 +5,11 @@ var crypto = require('crypto');
 const UserModel = require('../models/UserModel');
 const Authentication = require('../utils/Authentication');
 const res = require('express/lib/response');
+const GetQueryToBody = require('../utils/GetQueryToBody');
 
 // check login valid
 router.get('/',
+    GetQueryToBody(),
     validateExistingUser(),
     hashPassword(),
     authenticateUser(),
