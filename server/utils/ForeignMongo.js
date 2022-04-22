@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const ObjectId = require('mongoose/lib/types/objectid');
 
 var tables = {};
 
@@ -16,7 +17,8 @@ function registerTable(name, schema) {
 async function getOrCreateObj(schema, id) {
     // returns the existing schema object if it exists, otherwise creates a new one
     if (id != null) {
-        return await schema.findById(id);
+        let found = await schema.findById(id);
+        if (found) return found;
     }
     return new schema();
 }
@@ -68,6 +70,7 @@ async function performRecursivePopulation(schema, items) {
 
 module.exports = {
     registerTable: registerTable,
+    getOrCreateObj: getOrCreateObj,
     performRecursiveSave: performRecursiveSave,
     performRecursivePopulation: performRecursivePopulation,
 };
