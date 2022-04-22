@@ -6,9 +6,11 @@ const UserModel = require('../models/UserModel');
 const Authentication = require('../utils/Authentication');
 const res = require('express/lib/response');
 const ForeignMongo = require('../utils/ForeignMongo')
+const GetQueryToBody = require('../utils/GetQueryToBody');
 
 // check login valid
 router.get('/',
+    GetQueryToBody(),
     validateExistingUser(),
     hashPassword(),
     authenticateUser(),

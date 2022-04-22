@@ -31,8 +31,15 @@ const Customers: React.FC<customersProps> = () => {
     if (customers) {
       const sortedCustomersCopy = customers.filter(
         (customer) =>
-          customer.firstName.includes(searchbarInput) ||
-          customer.lastName.includes(searchbarInput),
+          customer.firstName
+            .toLowerCase()
+            .includes(searchbarInput.toLowerCase()) ||
+          customer.lastName
+            .toLowerCase()
+            .includes(searchbarInput.toLowerCase()) ||
+          `${customer.firstName} ${customer.lastName}`
+            .toLowerCase()
+            .includes(searchbarInput.toLowerCase()),
       )
       setCustomersCopy(sortedCustomersCopy)
     }
