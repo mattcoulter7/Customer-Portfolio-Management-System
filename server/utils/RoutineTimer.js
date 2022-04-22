@@ -17,7 +17,7 @@ class RoutineTimer {
 
     Run(){
         this.onRunCallback();
-        this.lastRun = new Date().getTime();
+        this.lastRun = new Date();
         this.nextRun = this.determineNextRun();
     }
 
