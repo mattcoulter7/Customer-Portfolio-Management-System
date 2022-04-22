@@ -18,7 +18,7 @@ interface Props {
 }
 
 const CustomTable: React.FC<Props> = ({ customers }) => {
-  const range = 20
+  const range: number = 20
   const data: Array<Customer> = React.useMemo(
     () => customers.slice(0, range),
     [customers],
@@ -34,8 +34,12 @@ const CustomTable: React.FC<Props> = ({ customers }) => {
         accessor: "lastName",
       },
       {
+        Header: "city",
+        accessor: (row) => row.address.city,
+      },
+      {
         Header: "joined at",
-        accessor: "createdAt",
+        accessor: (row) => row.createdAt.slice(0, 10),
       },
     ],
     [],
@@ -55,10 +59,7 @@ const CustomTable: React.FC<Props> = ({ customers }) => {
           {headerGroups.map((headerGroup) => (
             <Tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
-                <Th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  /* isNumeric={column.isNumeric} */
-                >
+                <Th {...column.getHeaderProps(column.getSortByToggleProps())}>
                   {column.render("Header")}
                   <chakra.span pl="4">
                     {column.isSorted ? (
@@ -80,12 +81,7 @@ const CustomTable: React.FC<Props> = ({ customers }) => {
             return (
               <Tr {...row.getRowProps()}>
                 {row.cells.map((cell) => (
-                  <Td
-                    {...cell.getCellProps()}
-                    /* isNumeric={cell.column.isNumeric} */
-                  >
-                    {cell.render("Cell")}
-                  </Td>
+                  <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
                 ))}
               </Tr>
             )
