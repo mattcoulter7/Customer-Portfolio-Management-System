@@ -12,6 +12,7 @@ const tables = {
     'address': require('../models/AddressModel'),
     'sample': require('../models/SampleModel'),
     'userdetails': require('../models/UserDetailsModel'),
+    'stockopenclose': require('../models/StockOpenClose')
 }
 for (const [name, schema] of Object.entries(tables)) {
     ForeignMongo.registerTable(name, schema);

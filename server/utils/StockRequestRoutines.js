@@ -2,11 +2,11 @@ const StockRequestLoopers = require('./StockRequestLoopers');
 const RoutineTimer = require('./RoutineTimer');
 
 const routines = [
-    new RoutineTimer(
+    /*new RoutineTimer(
         () => StockRequestLoopers.aggregates.OnCycle(),
         () => new Date(new Date().getTime() + 15000)
-    ),
-    new RoutineTimer(
+    ),*/
+    /*new RoutineTimer(
         () => StockRequestLoopers.dailyOpenCloseAll.OnCycle(),
         () => {
             let tomorrow = new Date();
@@ -14,6 +14,10 @@ const routines = [
             tomorrow.setHours(0, 0, 0, 0);
             return tomorrow;
         }
+    )*/
+    new RoutineTimer(
+        () => StockRequestLoopers.dailyOpenClose.OnCycle(),
+        () => new Date(new Date().getTime() + 12000)
     )
 ]
 

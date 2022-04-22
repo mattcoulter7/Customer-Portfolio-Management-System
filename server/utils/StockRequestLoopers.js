@@ -1,4 +1,5 @@
 const Polygon = require('./Polygon');
+const fetch = require('node-fetch')
 const RequestLooper = require('./RequestLooper');
 
 const apiKey = "O2KxoBKuCXuLpoT0xyv3Rpb2Q1SROZTz";
@@ -32,6 +33,20 @@ const dailyOpenCloseRequestLooper = new RequestLooper(stockRequesters.flatMap(re
     }),
 ]), (request, value) => {
     console.log(value);
+    
+    delete value.status;
+
+    fetch("http://localhost:3001/query/stockopenclose",{
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(value)
+    }).then((response) => {
+        return response.json();
+    }).then((data) => {
+        console.log(data);
+    })
 });
 
 const dailyOpenCloseAllRequestLooper = new RequestLooper([
