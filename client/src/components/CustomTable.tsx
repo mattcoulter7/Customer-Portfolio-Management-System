@@ -12,12 +12,15 @@ import {
 } from "@chakra-ui/react"
 import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons"
 import { Customer } from "../types/types"
+import "./CustomTable.css"
+import { useNavigate } from "react-router-dom"
 
 interface Props {
   customers: Array<Customer>
 }
 
 const CustomTable: React.FC<Props> = ({ customers }) => {
+  const navigate = useNavigate()
   const range: number = 20
   const data: Array<Customer> = React.useMemo(
     () => customers.slice(0, range),
@@ -47,6 +50,10 @@ const CustomTable: React.FC<Props> = ({ customers }) => {
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     useTable({ columns, data }, useSortBy)
+
+  const handleClink = (customerId: string) => {
+    navigate(`/customers/${customerId}`)
+  }
 
   return (
     <>
@@ -79,7 +86,10 @@ const CustomTable: React.FC<Props> = ({ customers }) => {
           {rows.map((row) => {
             prepareRow(row)
             return (
-              <Tr {...row.getRowProps()}>
+              <Tr
+                {...row.getRowProps()}
+                onClick={() => handleClink(row.original._id)}
+              >
                 {row.cells.map((cell) => (
                   <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>
                 ))}

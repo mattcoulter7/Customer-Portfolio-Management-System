@@ -6,8 +6,7 @@ import Customers from "./pages/customers"
 import Todo from "./pages/todo"
 import NotFound from "./pages/notFound"
 import NewCustomer from "./pages/newCustomer"
-
-import CustomerDAO from './DAOs/CustomerDAO';
+import SingleCustomer from "./pages/singleCustomer"
 
 function App() {
   return (
@@ -16,6 +15,7 @@ function App() {
         <Route element={<LayoutsWithNavbar />}>
           <Route index element={<Todo />} />
           <Route path="customers" element={<Customers />} />
+          <Route path="customers/:customerId" element={<SingleCustomer />} />
           <Route path="todo" element={<Todo />} />
           <Route path="new/customer" element={<NewCustomer />} />
 
