@@ -10,8 +10,6 @@ const stockCodes = require('../assets/supportedStocks.json')
 const stockRequesters = stockCodes.map((code) => new Polygon.PolygonStockRequests(code, apiKey)); // for specific stocks
 const requester = new Polygon.PolygonRequests(apiKey); // for all stocks
 
-let yesterday = new Date(new Date().setDate(new Date().getDate() - 1));
-
 // create the request loopers for each type of request
 const aggregatesRequestLooper = new RequestLooper(
     stockRequesters.flatMap(requester => [
@@ -29,7 +27,11 @@ const previousCloseRequestLooper = new RequestLooper(
 
 const dailyOpenCloseRequestLooper = new RequestLooper(stockRequesters.flatMap(requester => [
     () => requester.DailyOpenClose({
-        date: yesterday
+        get date(){
+            let yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            return yesterday;
+        }
     }),
 ]), (request, value) => {
     console.log(value);
