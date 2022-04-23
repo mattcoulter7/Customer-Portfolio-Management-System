@@ -31,6 +31,12 @@ class PolygonStockRequests extends PolygonRequests {
         this.code = code;
     }
 
+    GetDateString(date) {
+        return date.toLocaleDateString('fr-CA', { 
+            timeZone: 'America/New_York' 
+        });
+    }
+
     get Aggregates() {
         return (options = {}) => {
             options = {
@@ -43,7 +49,7 @@ class PolygonStockRequests extends PolygonRequests {
                 limit: 5000,
                 ...options
             }
-            const url = `${this.baseURL}/v2/aggs/ticker/${this.code}/range/${options.multiplier}/day/${options.from.toLocaleDateString('fr-CA')}/${options.to.toLocaleDateString('fr-CA')}?adjusted=${options.adjusted}&sort=${options.sort}&limit=${options.limit}&apiKey=${this.apiKey}`
+            const url = `${this.baseURL}/v2/aggs/ticker/${this.code}/range/${options.multiplier}/day/${this.GetDateString(options.from)}/${this.GetDateString(options.to)}?adjusted=${options.adjusted}&sort=${options.sort}&limit=${options.limit}&apiKey=${this.apiKey}`
             return this.HandleRequest(url);
         }
     }
@@ -55,7 +61,7 @@ class PolygonStockRequests extends PolygonRequests {
                 adjusted: true,
                 ...options
             }
-            const url = `${this.baseURL}/v1/open-close/${this.code}/${options.date.toLocaleDateString('fr-CA')}?adjusted=${options.adjusted}&apiKey=${this.apiKey}`;
+            const url = `${this.baseURL}/v1/open-close/${this.code}/${this.GetDateString(options.date)}?adjusted=${options.adjusted}&apiKey=${this.apiKey}`;
             return this.HandleRequest(url);
         }
     }
