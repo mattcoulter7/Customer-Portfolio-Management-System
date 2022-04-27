@@ -27,19 +27,20 @@ const previousCloseRequestLooper = new RequestLooper(
 
 const dailyOpenCloseRequestLooper = new RequestLooper(stockRequesters.flatMap(requester => [
     () => requester.DailyOpenClose({
-        get date(){
+        get date() {
             let yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
             return yesterday;
         }
     }),
 ]), (request, value) => {
+    if (!value) return;
     console.log(value);
-    
+    if (value.status == 'ERROR') return;
     delete value.status;
     value._id = `${new Date(value.from).getTime()}${value.symbol}`
 
-    fetch("http://localhost:3001/query/stockopenclose",{
+    fetch("http://localhost:3001/query/stockopenclose", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
@@ -54,7 +55,11 @@ const dailyOpenCloseRequestLooper = new RequestLooper(stockRequesters.flatMap(re
 
 const dailyOpenCloseAllRequestLooper = new RequestLooper([
     () => requester.GroupedDaily({
-        date: yesterday
+        get date() {
+            let yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            return yesterday;
+        }
     })
 ], (request, value) => {
     console.log(value);

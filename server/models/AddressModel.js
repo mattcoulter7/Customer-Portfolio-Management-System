@@ -14,7 +14,7 @@ const addressSchema = new mongoose.Schema({
         required: false
     },
     postcode: {
-        type: Date,
+        type: String,
         required: true
     },
     city: {
@@ -25,7 +25,7 @@ const addressSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    sample:{
+    sample: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Sample'
     }
