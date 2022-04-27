@@ -68,6 +68,7 @@ async function performRecursivePopulation(schema, items) {
 
 module.exports = {
     registerTable: registerTable,
+    getOrCreateObj: getOrCreateObj,
     performRecursiveSave: performRecursiveSave,
     performRecursivePopulation: performRecursivePopulation,
 };
