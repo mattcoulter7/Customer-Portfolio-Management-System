@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     hash: { // md5 string
         type: String,
         required: true
+    },
+    userdetails: { // foreign column name must match map key in query router 'tables' object
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'UserDetails'
     }
 })
 

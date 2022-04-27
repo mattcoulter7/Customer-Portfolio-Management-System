@@ -7,6 +7,7 @@ const queryRouter = require('./routers/query');
 const userRouter = require('./routers/user');
 const methodOverride = require('method-override');
 const cookieParser = require('cookie-parser');
+const StockRequestRoutines = require('./utils/StockRequestRoutines');
 
 mongoose.connect('mongodb://localhost/cpms', {
     useNewUrlParser: true,
@@ -23,5 +24,7 @@ app.use(cookieParser());
 
 app.use('/query', queryRouter);
 app.use('/user', userRouter);
+
+StockRequestRoutines.startAll();
 
 app.listen(3001);
