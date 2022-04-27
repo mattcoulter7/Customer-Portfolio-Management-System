@@ -19,13 +19,13 @@ for (const [name, schema] of Object.entries(tables)) {
 }
 //#endregion
 
-router.get('/:table', validateAuthenticated(), validateTable(), async (req, res) => {
+router.get('/:table', validateAuthenticated(), validateTable(), async(req, res) => {
     const resultSet = await req.schema.find();
     await ForeignMongo.performRecursivePopulation(req.schema, resultSet);
     return res.send(resultSet);
 });
 
-router.get('/:table/:id', validateAuthenticated(), validateTable(), async (req, res) => {
+router.get('/:table/:id', validateAuthenticated(), validateTable(), async(req, res) => {
     try {
         const resultSet = await req.schema.findById(req.params.id);
         await ForeignMongo.performRecursivePopulation(req.schema, resultSet);
@@ -39,17 +39,17 @@ router.get('/:table/:id', validateAuthenticated(), validateTable(), async (req, 
     }
 });
 
-router.post('/:table', validateAuthenticated(), validateTable(), async (req, res, next) => {
+router.post('/:table', validateAuthenticated(), validateTable(), async(req, res, next) => {
     req.obj = await ForeignMongo.getOrCreateObj(req.schema, req.body._id);
     next();
 }, saveObj());
 
-router.put('/:table/:id', validateAuthenticated(), validateTable(), async (req, res, next) => {
+router.put('/:table/:id', validateAuthenticated(), validateTable(), async(req, res, next) => {
     req.obj = await ForeignMongo.getOrCreateObj(req.schema, req.body._id);
     next();
 }, saveObj());
 
-router.delete('/:table/:id', validateAuthenticated(), validateTable(), async (req, res) => {
+router.delete('/:table/:id', validateAuthenticated(), validateTable(), async(req, res) => {
     try {
         var result = await req.schema.findByIdAndDelete(req.params.id);
         return res.send(!!result);
@@ -60,7 +60,7 @@ router.delete('/:table/:id', validateAuthenticated(), validateTable(), async (re
 
 function validateAuthenticated() {
     // ensures client making request is logged in
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         // get AuthToken from Cookies
         const authToken = req.cookies['AuthToken'];
         req.user = Authentication.Instance().getAuthenticated(authToken);
@@ -74,7 +74,7 @@ function validateAuthenticated() {
 
 function validateTable() {
     // ensures the requested table is valid, sotre is in request
-    return async (req, res, next) => {
+    return async(req, res, next) => {
         req.schema = tables[req.params.table];
         if (!req.schema) {
             return res.status(400).send(new Error(`Table: ${req.params.table} does not exist.`));
@@ -85,7 +85,7 @@ function validateTable() {
 
 // saves the object to the databse
 function saveObj() {
-    return async (req, res) => {
+    return async(req, res) => {
         try {
             let obj = await ForeignMongo.performRecursiveSave(req.schema, req.obj, req.body);
             await ForeignMongo.performRecursivePopulation(req.schema, obj);
