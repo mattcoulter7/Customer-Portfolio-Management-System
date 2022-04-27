@@ -40,12 +40,12 @@ router.get('/:table/:id', validateAuthenticated(), validateTable(), async(req, r
 });
 
 router.post('/:table', validateAuthenticated(), validateTable(), async(req, res, next) => {
-    req.obj = new req.schema();
+    req.obj = await ForeignMongo.getOrCreateObj(req.schema, req.body._id);
     next();
 }, saveObj());
 
 router.put('/:table/:id', validateAuthenticated(), validateTable(), async(req, res, next) => {
-    req.obj = await req.schema.findById(req.params.id);
+    req.obj = await ForeignMongo.getOrCreateObj(req.schema, req.body._id);
     next();
 }, saveObj());
 

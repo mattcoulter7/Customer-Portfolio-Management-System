@@ -14,7 +14,8 @@ mongoose.connect('mongodb://localhost/cpms', {
     useUnifiedTopology: true
 });
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+//app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true

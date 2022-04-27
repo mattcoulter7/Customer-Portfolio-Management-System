@@ -7,9 +7,18 @@ class PolygonRequests {
     }
 
     HandleRequest(url) {
-        return fetch(url).then((resp) => {
-            return resp.json();
-        });
+        try {
+            return fetch(url)
+                .then((resp) => {
+                    if (resp.ok && resp.status == 200) {
+                        return resp.json();
+                    }
+                }).catch(e => {
+                    console.error(e);
+                })
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     get GroupedDaily() {
@@ -32,8 +41,8 @@ class PolygonStockRequests extends PolygonRequests {
     }
 
     GetDateString(date) {
-        return date.toLocaleDateString('fr-CA', { 
-            timeZone: 'America/New_York' 
+        return date.toLocaleDateString('fr-CA', {
+            timeZone: 'America/New_York'
         });
     }
 
