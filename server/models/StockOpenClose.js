@@ -1,43 +1,45 @@
 const mongoose = require('mongoose');
 
 const stockOpenCloseSchema = new mongoose.Schema({
-    afterHours:{
-        type: Number
-    },
-    close:{
-        type: Number
-    },
-    from:{
-        type:Date
-    },
-    high:{
-        type: Number
-    },
-    low:{
-        type: Number
-    },
-    open:{
-        type: Number
-    },
-    preMarket:{
-        type: Number
-    },
-    symbol:{
+    _id:{
         type:String
     },
-    volume:{
-        type: Number
+    afterHours: {
+        type: Number,
+        required: true
+    },
+    close: {
+        type: Number,
+        required: true
+    },
+    from: {
+        type: String,
+        required: true
+    },
+    high: {
+        type: Number,
+        required: true
+    },
+    low: {
+        type: Number,
+        required: true
+    },
+    open: {
+        type: Number,
+        required: true
+    },
+    preMarket: {
+        type: Number,
+        required: true
+    },
+    symbol: {
+        type: String,
+        required: true
+    },
+    volume: {
+        type: Number,
+        required: true
     }
-})
-
-stockOpenCloseSchema.pre("save", setId())
-
-function setId(){
-    return function(next) {
-        var date = new Date(this.from);
-        this._id = `${date.getTime()}${this.symbol}`;
-        next();
-    }
-}
+});
 
 module.exports = mongoose.model('StockOpenClose', stockOpenCloseSchema)

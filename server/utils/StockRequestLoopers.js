@@ -38,6 +38,7 @@ const dailyOpenCloseRequestLooper = new RequestLooper(stockRequesters.flatMap(re
     console.log(value);
     if (value.status == 'ERROR') return;
     delete value.status;
+    value._id = `${new Date(value.from).getTime()}${value.symbol}`
 
     fetch("http://localhost:3001/query/stockopenclose", {
         method: "POST",
