@@ -42,7 +42,7 @@ const SingleCustomer: React.FC<Props> = () => {
   }, [])
 
   const gotoEditPage = (customerId: string): void => {
-    navigate(`/udpate/customer/${customerId}`)
+    navigate(`/update/customer/${customerId}`)
   }
 
   const gotoListPage = (isDeleted: boolean): void => {

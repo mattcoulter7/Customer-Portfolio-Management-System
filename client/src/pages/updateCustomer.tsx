@@ -1,45 +1,49 @@
 import { Box, Button, Heading, SimpleGrid, useToast } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import InputField from '../components/InputField';
 import CustomerDAO from '../DAOs/CustomerDAO';
 import CustomerDTO from '../DTOs/CustomerDTO';
+import { Customer } from '../types/types';
 
 interface Props {}
-const NewCustomer: React.FC<Props> = () => {
-	/* 
-    useEffect(() => {
-    const script = document.createElement("script")
+const UpdateCustomer: React.FC<Props> = () => {
+	const { customerId } = useParams() as { customerId: string };
+	const [customer, setCustomer] = useState<Customer | null>(null);
 
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_PLACES_API_KEY}&libraries=places`
-    script.async = true
-
-    document.body.appendChild(script)
-
-    return () => {
-      document.body.removeChild(script)
-    }
-  }, [])
-  */
+	useEffect(() => {
+		const getCustomer = async (customerId: string) => {
+			const customerFromServer = await CustomerDAO.selectId(customerId);
+			if (customerFromServer) {
+				setCustomer(customerFromServer);
+			}
+		};
+		getCustomer(customerId);
+	}, []);
 
 	const now = new Date();
 	const toast = useToast();
 	return (
 		<Formik
+			enableReinitialize
 			initialValues={{
-				firstName: '',
-				lastName: '',
-				createdAt: now.toISOString(),
+        _id: customer?._id,
+				firstName: customer?.firstName,
+				lastName: customer?.lastName,
+				createdAt: customer?.createdAt,
 				DOB: '',
-				email: '',
-				phone: '',
+				email: customer?.email,
+				phone: customer?.phone,
 				address: {
-					country: 'Australia',
-					line1: '',
-					line2: '',
-					postcode: '',
-					city: '',
-					state: '',
+          _id: customer?.address._id,
+					country: customer?.address.country,
+					line1: customer?.address.line1,
+					line2: customer?.address.line2,
+					postcode: customer?.address.postcode,
+					city: customer?.address.city,
+					state: customer?.address.state,
 				},
 			}}
 			validationSchema={Yup.object({
@@ -87,22 +91,21 @@ const NewCustomer: React.FC<Props> = () => {
 						.matches(/^[A-Za-z]+$/, 'Please enter a valid state'),
 					postcode: Yup.string()
 						.required('Postcode cannot be blank')
-						.matches(/^[A-Za-z0-9]+$/, 'Please enter a valid postcode'),
+						.matches(/^[a-zA-Z0-9]+$/, 'Please enter a valid postcode'),
 				}),
 			})}
 			onSubmit={(values, actions) => {
-				CustomerDAO.insert(
+				CustomerDAO.update(
 					new CustomerDTO({
 						...values,
-						DOB: new Date(values.DOB).toISOString(),
-						createdAt: new Date().toISOString(),
+            DOB: new Date(values.DOB).toISOString(),
 					})
 				).then((result) => {
 					if (result) {
 						toast({
 							title: 'Success',
 							position: 'top-right',
-							description: 'Account created successfully',
+							description: 'Customer details updated successfully',
 							status: 'success',
 							duration: 5000,
 							isClosable: true,
@@ -125,7 +128,7 @@ const NewCustomer: React.FC<Props> = () => {
 			{(formik) => (
 				<Box px={[4, 4, 20, 40]} h="100vh">
 					<Box py={4}>
-						<Heading size="lg">Add New Customer</Heading>
+						<Heading size="lg">Update Customer</Heading>
 						<hr />
 					</Box>
 					<form onSubmit={formik.handleSubmit}>
@@ -225,4 +228,4 @@ const NewCustomer: React.FC<Props> = () => {
 	);
 };
 
-export default NewCustomer;
+export default UpdateCustomer;
