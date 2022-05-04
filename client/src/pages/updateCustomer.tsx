@@ -33,7 +33,7 @@ const UpdateCustomer: React.FC<Props> = () => {
 				firstName: customer?.firstName,
 				lastName: customer?.lastName,
 				createdAt: customer?.createdAt,
-				DOB: '',
+				DOB: customer ? customer.DOB.slice(0, 10): " ",
 				email: customer?.email,
 				phone: customer?.phone,
 				address: {
@@ -66,8 +66,8 @@ const UpdateCustomer: React.FC<Props> = () => {
 				DOB: Yup.string()
 					.required('Date of Birth cannot be blank')
 					.matches(
-						/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/,
-						'Accept format: YYYY/MM/DD'
+						/^\d{4}\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])$/,
+						'Please enter a valid date in the format: YYYY-MM-DD'
 					),
 				address: Yup.object({
 					country: Yup.string()
@@ -151,7 +151,7 @@ const UpdateCustomer: React.FC<Props> = () => {
 								name="DOB"
 								type="text"
 								label="Date of Birth"
-								placeholder="YYYY/MM/DD"
+								placeholder="YYYY-MM-DD"
 							/>
 						</SimpleGrid>
 						<SimpleGrid columns={[1, 2]} spacing={[0, 5]}>
