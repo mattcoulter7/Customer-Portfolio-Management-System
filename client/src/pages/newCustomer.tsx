@@ -62,13 +62,13 @@ const NewCustomer: React.FC<Props> = () => {
 				DOB: Yup.string()
 					.required('Date of Birth cannot be blank')
 					.matches(
-						/^\d{4}\/(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])$/,
-						'Accept format: YYYY/MM/DD'
+						/^\d{4}\-(0[1-9]|1[0-2])\-(0[1-9]|[12][0-9]|3[01])$/,
+						'Please enter a valid date in the format: YYYY-MM-DD'
 					),
 				address: Yup.object({
 					country: Yup.string()
 						.required('Country cannot be blank')
-						.matches(/^[A-Za-z]+$/, 'Please enter a valid country'),
+						.matches(/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/, 'Please enter a valid country'),
 					line1: Yup.string()
 						.required('Address Line 1 cannot be blank')
 						.matches(/^[ A-Za-z0-9_./#&-]*$/, 'Please enter a valid address'),
@@ -79,12 +79,12 @@ const NewCustomer: React.FC<Props> = () => {
 					city: Yup.string()
 						.required('City cannot be blank')
 						.matches(
-							/^[A-Za-z]+$/,
+							/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/,
 							'Only alphabets are allowed for this field'
 						),
 					state: Yup.string()
 						.required('State cannot be blank')
-						.matches(/^[A-Za-z]+$/, 'Please enter a valid state'),
+						.matches(/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/, 'Please enter a valid state'),
 					postcode: Yup.string()
 						.required('Postcode cannot be blank')
 						.matches(/^[A-Za-z0-9]+$/, 'Please enter a valid postcode'),
@@ -148,7 +148,7 @@ const NewCustomer: React.FC<Props> = () => {
 								name="DOB"
 								type="text"
 								label="Date of Birth"
-								placeholder="YYYY/MM/DD"
+								placeholder="YYYY-MM-DD"
 							/>
 						</SimpleGrid>
 						<SimpleGrid columns={[1, 2]} spacing={[0, 5]}>
