@@ -72,7 +72,7 @@ const UpdateCustomer: React.FC<Props> = () => {
 				address: Yup.object({
 					country: Yup.string()
 						.required('Country cannot be blank')
-						.matches(/^[A-Za-z]+$/, 'Please enter a valid country'),
+						.matches(/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/, 'Please enter a valid country'),
 					line1: Yup.string()
 						.required('Address Line 1 cannot be blank')
 						.matches(/^[ A-Za-z0-9_./#&-]*$/, 'Please enter a valid address'),
@@ -83,12 +83,12 @@ const UpdateCustomer: React.FC<Props> = () => {
 					city: Yup.string()
 						.required('City cannot be blank')
 						.matches(
-							/^[A-Za-z]+$/,
+							/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/,
 							'Only alphabets are allowed for this field'
 						),
 					state: Yup.string()
 						.required('State cannot be blank')
-						.matches(/^[A-Za-z]+$/, 'Please enter a valid state'),
+						.matches(/^[a-zA-Z0-9_]+( [a-zA-Z0-9_]+)*$/, 'Please enter a valid state'),
 					postcode: Yup.string()
 						.required('Postcode cannot be blank')
 						.matches(/^[a-zA-Z0-9]+$/, 'Please enter a valid postcode'),
