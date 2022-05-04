@@ -8,6 +8,7 @@ import Stocks from "./pages/stocks"
 import NotFound from "./pages/notFound"
 import NewCustomer from "./pages/newCustomer"
 import SingleCustomer from "./pages/singleCustomer"
+import UpdateCustomer from "./pages/updateCustomer"
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="todo" element={<Todo />} />
           <Route path="stocks" element={<Stocks />} />
           <Route path="new/customer" element={<NewCustomer />} />
+          <Route path="update/customer/:customerId" element={<UpdateCustomer />} />
 
           <Route path="*" element={<NotFound />} />
         </Route>
